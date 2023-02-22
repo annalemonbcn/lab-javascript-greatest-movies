@@ -67,13 +67,52 @@ function dramaMoviesScore(moviesArray) {
 }
 
 // Iteration 5: Ordering by year - Order by year, ascending (in growing order)
-function orderByYear(moviesArray) {}
+function orderByYear(moviesArray) {
+  // Duplicate array
+  const moviesArrayCopy = [...moviesArray];
+  // Sort array
+  moviesArrayCopy.sort((a, b) => {
+    if(a.year === b.year){
+      if(a.title < b.title){
+        return -1;
+      } else if(a.title > b.title){
+        return 1;
+      }
+    }
+    return a.year - b.year;
+    
+  });
+  return moviesArrayCopy;
+}
 
 // Iteration 6: Alphabetic Order - Order by title and print the first 20 titles
-function orderAlphabetically(moviesArray) {}
+function orderAlphabetically(moviesArray) {
+  // Map the array to get the titles
+  const moviesByTitle = moviesArray.map(movie => movie.title);
+  // Sort titles
+  moviesByTitle.sort();
+  // If array has more of 20 items, splice it
+  if(moviesByTitle.length > 20){
+    moviesByTitle.splice(20, moviesByTitle.length);
+  }
+  // Return
+  return moviesByTitle;
+}
 
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
-function turnHoursToMinutes(moviesArray) {}
+function turnHoursToMinutes(moviesArray) {
+  convertStringHoursToInt(moviesArray[0].duration);
+}
+
+function convertStringHoursToInt(duration){
+  duration = duration.split(' ');
+  /*console.log(`duration: ${duration}`);
+  let regex = '/(\dh) (\d?\d[m][i][n])?';*/
+
+  let hours = duration[0].match(/[\d]+/);
+  let minutes = duration[1].match(/[\d]+/);
+  console.log(`hours: ${hours}, minutes: ${minutes}`);
+}
 
 // BONUS - Iteration 8: Best yearly score average - Best yearly score average
 function bestYearAvg(moviesArray) {}
