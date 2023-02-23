@@ -4,7 +4,11 @@
 function getAllDirectors(moviesArray) {
   // Apply map
   const allDirectors = moviesArray.map(movie => movie.director);
-  return allDirectors;
+  // Filter results
+  let uniqueDirectors = allDirectors.filter((director, index) => {
+    return allDirectors.indexOf(director) === index;
+  });
+  return uniqueDirectors;
 }
 
 // Iteration 2: Steven Spielberg. The best? - How many drama movies did STEVEN SPIELBERG direct?
@@ -101,18 +105,80 @@ function orderAlphabetically(moviesArray) {
 
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
 function turnHoursToMinutes(moviesArray) {
-  convertStringHoursToInt(moviesArray[0].duration);
+  // const newMoviesArray = [...moviesArray];
+  // newMoviesArray.forEach(function(movie){
+  //   movie.duration = convertStringHoursToNum(movie.duration);
+  // });
+
+  // Create a deep copy of the original array
+  const newMoviesArray = JSON.parse(JSON.stringify(moviesArray));
+  // Apply map
+  newMoviesArray.map(function(movie){
+    // Convert duration into numbers and modify initial value
+    movie.duration = convertStringHoursToNum(movie.duration);
+    // Return movie
+    return movie;
+  });
+  // Return new array
+  return newMoviesArray;
 }
 
-function convertStringHoursToInt(duration){
-  duration = duration.split(' ');
-  /*console.log(`duration: ${duration}`);
-  let regex = '/(\dh) (\d?\d[m][i][n])?';*/
-
-  let hours = duration[0].match(/[\d]+/);
-  let minutes = duration[1].match(/[\d]+/);
-  console.log(`hours: ${hours}, minutes: ${minutes}`);
+function convertStringHoursToNum(duration){
+  const minutesInHour = 60;
+  // Regex with pattern
+  const regex = /\d+/g;
+  // Capture values and convert them into numbers
+  const matches = duration.match(regex);
+  const hours = parseInt(matches[0]);
+  let minutes;
+  // If minutes not existing in duration
+  if(matches.length === 1){
+    minutes = 0;
+  } else {
+    minutes = parseInt(matches[1]);
+  }
+  // Return total numerical duration
+  return (hours*minutesInHour)+minutes;
 }
 
 // BONUS - Iteration 8: Best yearly score average - Best yearly score average
-function bestYearAvg(moviesArray) {}
+function bestYearAvg(moviesArray){
+  //If array is empty
+  if(moviesArray.length === 0){
+    return null;
+  } 
+
+  // Create auxiliar obj
+  let yearsAndScore = {};
+
+  // Loop array
+  moviesArray.forEach(function(movie){
+    // Add scores in array for each year
+    if(!(yearsAndScore.hasOwnProperty(movie.year.toString()))){
+      yearsAndScore[movie.year] = [movie.score];
+    } else {
+      yearsAndScore[movie.year].push(movie.score);
+    }
+  });
+  
+  let greatestAverage = 0;
+  let greatestYear;
+  // Loop obj
+  for(const year in yearsAndScore){
+    const scores = yearsAndScore[year];
+    let sumScores = 0;
+    // Loop scores for each year
+    for(let i = 0; i < scores.length; i++){
+      sumScores += scores[i];
+    }
+    // Calculate average for every year
+    yearAverage = sumScores / scores.length;
+    // If actual average is greatest than average, save value
+    if(yearAverage > greatestAverage){
+      greatestAverage = yearAverage;
+      greatestYear = year;
+    }
+  }
+  // Return
+  return `The best year was ${greatestYear} with an average score of ${greatestAverage}`;
+}
